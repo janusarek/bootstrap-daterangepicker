@@ -1006,7 +1006,7 @@
             this.isShowing = true;
         },
 
-        hide: function(e) {
+        hide: function(e, applyClicked) {
             if (!this.isShowing) return;
 
             //incomplete date selection, revert to last values
@@ -1019,13 +1019,15 @@
             if (!this.startDate.isSame(this.oldStartDate) || !this.endDate.isSame(this.oldEndDate))
                 this.callback(this.startDate, this.endDate, this.chosenLabel);
 
-            //if picker is attached to a text input, update it
-            if (this.element.is('input') && !this.singleDatePicker) {
-                this.element.val(this.startDate.format(this.locale.format) + this.locale.separator + this.endDate.format(this.locale.format));
-                this.element.trigger('change');
-            } else if (this.element.is('input')) {
-                this.element.val(this.startDate.format(this.locale.format));
-                this.element.trigger('change');
+            //if picker is attached to a text input and "Apply" has been clicked, update it
+            if (applyClicked) {
+                if (this.element.is('input') && !this.singleDatePicker) {
+                    this.element.val(this.startDate.format(this.locale.format) + this.locale.separator + this.endDate.format(this.locale.format));
+                    this.element.trigger('change');
+                } else if (this.element.is('input')) {
+                    this.element.val(this.startDate.format(this.locale.format));
+                    this.element.trigger('change');
+                }
             }
 
             $(document).off('.daterangepicker');
@@ -1201,7 +1203,7 @@
         },
 
         clickApply: function(e) {
-            this.hide();
+            this.hide(null, true);
             this.element.trigger('apply.daterangepicker', this);
         },
 
